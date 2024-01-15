@@ -40,17 +40,27 @@ context('My First Test', () => {
     //pick some foods from the menu
     cy.get('button[class$="bwpBYg"]').contains('Kompleksai trims.').click({force:true})
     cy.get('button[data-test-id^="product-modal"]').contains('Add to order').click({force:true})
+    cy.get('button[class$="bwpBYg"]').contains('10 mėsainių su sūriu').click({force:true})
+    cy.get('button[data-test-id^="product-modal"]').contains('Add to order').click({force:true})
+
 
     //check the cart for the item and the price
     cy.get('button[data-test-id$="view-button"]').eq(0).should('be.visible').click('center',{force:true})
-    cy.get('[data-test-id="CartItemName"]').contains('span','Kompleksai trims.')
+    cy.get('[class="sc-c3fd15b2-2 kPArvQ"]').children().should('contain','Kompleksai trims.').and('contain','10 mėsainių su sūriu')
+    cy.get('[class="sc-bd015adf-1 dRDGXm"]').should('have.text','€33.50')
+
+    //remove an item and check if the item is remove and the price is correct
+    cy.get('[data-value="6569438d34c80f5eb6551a3c"]').within( () => {
+      cy.get('button[aria-label="Remove item"]').click({force:true})
+    })
+    cy.get('[class="sc-c3fd15b2-2 kPArvQ"]').children().contains('10 mėsainių su sūriu').should('not.exist')
     cy.get('[class="sc-bd015adf-1 dRDGXm"]').should('have.text','€20.00')
 
     //proceed to check out
     cy.get('button[data-test-id$="NextStepButton"]').should('be.visible').click('center',{force:true})
     cy.get('input[name="email"]').type("example@hotmail.com")
     cy.get('button[data-test-id="StepMethodSelect.NextButton"]').click({force:true})
-    cy.wait(10000)//wait for the page to show that the confirmation email is sent
+    cy.wait(5000)//wait for the page to show that the confirmation email is sent
     
   })
 
